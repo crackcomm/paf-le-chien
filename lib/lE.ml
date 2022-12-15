@@ -179,11 +179,9 @@ struct
     | Ok flow -> (
         let error_handler = error_handler mvar_err in
         let response_handler = response_handler mvar_res pusher in
-        (* TheLortex: config ? *)
-        let conn =  Httpaf.Client_connection.create ?config:None in
         let httpaf_body =
           Httpaf.Client_connection.request 
-            ~error_handler ~response_handler conn req
+            ~error_handler ~response_handler req
         in
         Lwt.async (fun () ->
             Paf.run (module Httpaf_Client_connection) conn flow) ;

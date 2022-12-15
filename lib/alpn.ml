@@ -237,11 +237,8 @@ let run ?alpn handler edn request flow =
         handler.error edn (HTTP_1_1 http_1_1) (to_client_error_v1 error) in
       let response_handler response body =
         handler.response flow edn response body (HTTP_1_1 http_1_1) in
-      let conn =
-        Httpaf.Client_connection.create ?config:None 
-      in
-      let body =
-        Httpaf.Client_connection.request conn request ~error_handler
+      let body, conn =
+        Httpaf.Client_connection.request request ~error_handler
           ~response_handler in
       Lwt.async (fun () -> Paf.run (module Httpaf_Client_connection) conn flow) ;
       Lwt.return_ok (Response_HTTP_1_1 (body, conn))
